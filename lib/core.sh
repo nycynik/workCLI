@@ -19,11 +19,7 @@ cmd_help() {
 }
 
 cmd_version() {
-    if [[ -f "$PROJECT_ROOT/.mytool-version" ]]; then
-        cat "$PROJECT_ROOT/.mytool-version"
-    else
-        echo "0.1.0"
-    fi
+    echo "0.1.3"
 }
 
 
