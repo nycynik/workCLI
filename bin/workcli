@@ -2,10 +2,21 @@
 
 set -euo pipefail
 
-# Path setup (relative to script location)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-LIB_DIR="$PROJECT_ROOT/lib"
+# Figure out LIB_DIR
+if [[ -n "${WORKCLI_LIBEXEC:-}" && -d "$WORKCLI_LIBEXEC" ]]; then
+    # Running from Homebrew-installed version
+    LIB_DIR="$WORKCLI_LIBEXEC"
+else
+    # Running locally from repo
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+    LIB_DIR="$PROJECT_ROOT/lib"
+fi
+# ensure lib dir exist
+if [ ! -d "$LIB_DIR" ]; then
+    echo "Library directory '$LIB_DIR' does not exist."
+    exit 1
+fi
 
 # Source core + command files
 # shellcheck disable=SC1091
