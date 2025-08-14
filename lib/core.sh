@@ -19,7 +19,7 @@ cmd_help() {
 }
 
 cmd_version() {
-    VERSION=""
+    VERSION="0.1.5"
     echo "$VERSION"
 }
 
