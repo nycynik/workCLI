@@ -1,4 +1,4 @@
-# workCLI
+# workCLI (pronounced workly)
 
 A simple command line tool that helps automate your workflow so that you don't have to context switch to web apps as you develop your project.
 
