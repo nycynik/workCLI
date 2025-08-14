@@ -13,7 +13,7 @@ VERSION="$1"
 
 # 1. Update version in code
 echo "Updating version to $VERSION --"
-sed -i '' "s/^VERSION=.*/VERSION=\"$VERSION\"/" lib/core.sh
+sed -i '' "s/^    VERSION=\".*\"/    VERSION=\"$VERSION\"/" lib/core.sh
 bin/workcli --version
 echo "Version updated to $VERSION"
 
