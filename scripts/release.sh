@@ -20,7 +20,7 @@ echo "Version updated to $VERSION"
 # 2. Commit and tag
 echo "Committing changes and tagging version $VERSION --"
 git add lib/core.sh
-git commit -m "Bump version to $VERSION"
+git ci -m "Bump version to $VERSION"
 git tag "v$VERSION"
 git push origin main --tags
 echo "Changes committed and tagged version $VERSION"
