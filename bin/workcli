@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Path setup (relative to script location)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+LIB_DIR="$PROJECT_ROOT/lib"
+
+# Source core + command files
+# shellcheck disable=SC1091
+source "$LIB_DIR/core.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-init.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-create.sh"
+
+# Command routing
+COMMAND="${1:-help}"
+shift || true
+
+case "$COMMAND" in
+  init)   cmd_init "$@" ;;
+  create)  cmd_create "$@" ;;
+  help|--help|-h) cmd_help ;;
+  --version) cmd_version ;;
+  *) echo "Unknown command: $COMMAND" && cmd_help && exit 1 ;;
+esac
