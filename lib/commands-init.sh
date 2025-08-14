@@ -42,6 +42,18 @@ setup_github() {
 cmd_init() {
     ## Call the setup functions
 
+    print_status_message info "Initializing workspace..."
+
+    # first check if there is a .workcli.yaml file in this root, if not, copy the config.template.yml into that file.
+    if [ ! -f ".workcli.yaml" ]; then
+        cat <<EOF > .workcli.yaml
+# JIRA CONFIG
+project: "PROJECT_KEY"
+type: "Task"
+EOF
+        print_status_message info "Created .workcli.yaml from template."
+    fi
+
     setup_jira
     setup_github
 

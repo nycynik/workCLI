@@ -19,7 +19,7 @@ cmd_help() {
 }
 
 cmd_version() {
-    VERSION="0.1.5"
+    VERSION="0.1.6"
     echo "$VERSION"
 }
 
@@ -56,4 +56,9 @@ require_command() {
         print_status_message warning "Error: Required command '$1' not found" >&2
         exit 1
     }
+}
+
+get_config_value() {
+    local key="$1"
+    grep -E "^\s*$key:\s*" .workcli.yaml | sed -E "s/^\s*$key:\s*//"
 }

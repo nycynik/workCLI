@@ -8,6 +8,11 @@ if [ -z "${1:-}" ]; then
     echo "No version specified, quitting."
     exit 1
 fi
+# if no homebrew-workcli directory, quit
+if [ ! -d "../homebrew-workcli" ]; then
+    echo "No homebrew-workcli directory found, quitting."
+    exit 1
+fi
 
 VERSION="$1"
 
