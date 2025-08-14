@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-## Setup Jira command line
 setup_jira() {
+    ## Setup Jira command line
 
     require_command acli
 
@@ -20,6 +20,7 @@ setup_jira() {
 }
 
 setup_github() {
+    ## Setup GitHub command line
 
     require_command gh
 
@@ -39,7 +40,16 @@ setup_github() {
 
 
 cmd_init() {
-    # Call the setup function
+    ## Call the setup functions
+
     setup_jira
     setup_github
+
+    # if no errors show success
+    if [ $? -eq 0 ]; then
+        print_status_message success "Workspace initialized successfully."
+    else
+        print_status_message error "Failed to initialize workspace."
+        exit 1
+    fi
 }

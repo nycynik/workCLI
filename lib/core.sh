@@ -18,6 +18,15 @@ cmd_help() {
     echo -e "  --version Show version information"
 }
 
+cmd_version() {
+    if [[ -f "$PROJECT_ROOT/.mytool-version" ]]; then
+        cat "$PROJECT_ROOT/.mytool-version"
+    else
+        echo "0.1.0"
+    fi
+}
+
+
 # define a function to print messages with icons and colors
 print_status_message() {
     local type="$1"
