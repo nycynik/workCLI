@@ -27,6 +27,8 @@ source "$LIB_DIR/commands-init.sh"
 source "$LIB_DIR/commands-create.sh"
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-finish.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-status.sh"
 
 # If this folder has a .workcli.yaml file, load it
 if [ -f ".workcli.yaml" ]; then
