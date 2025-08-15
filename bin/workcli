@@ -29,6 +29,8 @@ source "$LIB_DIR/commands-create.sh"
 source "$LIB_DIR/commands-finish.sh"
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-status.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-start.sh"
 
 # If this folder has a .workcli.yaml file, load it
 if [ -f ".workcli.yaml" ]; then
@@ -43,7 +45,8 @@ case "$COMMAND" in
   init)   cmd_init "$@" ;;
   create)  cmd_create "$@" ;;
   finish)  cmd_finish "$@" ;;
-  status)  cmd_status "$@" ;;
+  start)   cmd_start "$@" ;;
+  status|--status|-st)  cmd_status "$@" ;;
   help|--help|-h) cmd_help ;;
   --version) cmd_version ;;
   *) echo "Unknown command: $COMMAND" && cmd_help && exit 1 ;;
