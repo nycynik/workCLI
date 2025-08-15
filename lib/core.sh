@@ -23,7 +23,12 @@ cmd_help() {
 
 cmd_version() {
     VERSION="0.1.7"
-    echo "$VERSION"
+    if [[ $VERBOSE -eq 1 ]]; then
+        echo "workcli $VERSION"
+    else
+        echo "$VERSION"
+    fi
+
 }
 
 
@@ -61,10 +66,15 @@ require_command() {
     }
 }
 
+get_workcli_config_file() {
+    echo "$(git rev-parse --show-toplevel)/.workcli"
+}
+
 get_config_values() {
     local key="$1"
     local WORKCLI_PATH
-    WORKCLI_PATH="$(git rev-parse --show-toplevel)/.workcli"
+
+    WORKCLI_PATH="$(get_workcli_config_file)"
     if [ ! -f "$WORKCLI_PATH" ]; then
         print_status_message error "Configuration file not found at $WORKCLI_PATH"
         exit 1

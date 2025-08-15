@@ -36,6 +36,18 @@ source "$LIB_DIR/commands-start.sh"
 COMMAND="${1:-help}"
 shift || true
 
+# Check for a --verbose flag
+VERBOSE=0
+for arg in "$@"; do
+  if [[ "$arg" == "--verbose" ]]; then
+    VERBOSE=1
+    break
+  fi
+done
+if [[ $VERBOSE -eq 1 ]]; then
+    echo "Verbose mode enabled"
+fi
+
 case "$COMMAND" in
   init)   cmd_init "$@" ;;
   create)  cmd_create "$@" ;;

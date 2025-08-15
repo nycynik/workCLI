@@ -8,7 +8,7 @@ cmd_finish() {
     require_command acli
     require_command gh
 
-    set_config
+    verify_config_or_die
 
     # Get the current branch name
     branch=$(git rev-parse --abbrev-ref HEAD)
