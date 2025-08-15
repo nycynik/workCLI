@@ -25,6 +25,13 @@ source "$LIB_DIR/core.sh"
 source "$LIB_DIR/commands-init.sh"
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-create.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-finish.sh"
+
+# If this folder has a .workcli.yaml file, load it
+if [ -f ".workcli.yaml" ]; then
+    source ".workcli.yaml"
+fi
 
 # Command routing
 COMMAND="${1:-help}"
@@ -33,6 +40,8 @@ shift || true
 case "$COMMAND" in
   init)   cmd_init "$@" ;;
   create)  cmd_create "$@" ;;
+  finish)  cmd_finish "$@" ;;
+  status)  cmd_status "$@" ;;
   help|--help|-h) cmd_help ;;
   --version) cmd_version ;;
   *) echo "Unknown command: $COMMAND" && cmd_help && exit 1 ;;
