@@ -3,11 +3,15 @@ set -euo pipefail
 
 # Release script for workcli
 
-# if no version, quit
+# if no version, auto bump
 if [ -z "${1:-}" ]; then
-    echo "No version specified, quitting."
-    exit 1
+    echo "No version specified, auto bumping."
+    # Get the current version
+    VERSION=$(grep -oP 'VERSION="\K[^"]+' lib/core.sh)
+    # Increment the patch version
+    VERSION=$(echo "$VERSION" | awk -F. -v OFS=. '{$NF++;print}')
 fi
+
 # if no homebrew-workcli directory, quit
 if [ ! -d "../homebrew-workcli" ]; then
     echo "No homebrew-workcli directory found, quitting."
