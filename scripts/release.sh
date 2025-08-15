@@ -7,7 +7,7 @@ set -euo pipefail
 if [ -z "${1:-}" ]; then
     echo "No version specified, auto bumping."
     # Get the current version
-    VERSION=$(grep -oP 'VERSION="\K[^"]+' lib/core.sh)
+    VERSION=$(sed -n 's/^.*VERSION="\([^"]*\)".*$/\1/p' lib/core.sh)
     # Increment the patch version
     VERSION=$(echo "$VERSION" | awk -F. -v OFS=. '{$NF++;print}')
 fi
