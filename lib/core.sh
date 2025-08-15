@@ -22,7 +22,7 @@ cmd_help() {
 }
 
 cmd_version() {
-    VERSION="0.1.7"
+    VERSION="0.1.8"
     if [[ $VERBOSE -eq 1 ]]; then
         echo "workcli $VERSION https://github.com/nycynik/workcli"
     else
