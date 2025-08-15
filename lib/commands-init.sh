@@ -46,10 +46,19 @@ setup_config() {
 
     if [ ! -f "$WORKCLI_PATH" ]; then
         print_status_message warning "Configuration file not found at $WORKCLI_PATH. Creating a new one."
+
+        # Ask the user for the project from jira.
+        read -rp "Enter your Jira project key: " jira_project
+        read -rp "Enter your Jira issue type: " jira_type
+
         touch "$WORKCLI_PATH"
-        echo "# Workcli configuration file" > "$WORKCLI_PATH"
-        echo "JIRA_PROJECT: your-project-code" >> "$WORKCLI_PATH"
-        echo "JIRA_TYPE: your-issue-type" >> "$WORKCLI_PATH"
+        {
+            echo "# Workcli configuration file"
+            echo "JIRA_PROJECT: $jira_project"
+            echo "JIRA_TYPE: $jira_type"
+            echo "GITHUB_REPO: $(gh repo view --json name -q .name)"
+            echo "BASE_BRANCH: $(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)"
+        } >> "$WORKCLI_PATH"
     fi
 }
 

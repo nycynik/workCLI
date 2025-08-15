@@ -51,6 +51,7 @@ fi
 case "$COMMAND" in
   init)   cmd_init "$@" ;;
   create)  cmd_create "$@" ;;
+  done)    cmd_done "$@" ;;
   finish)  cmd_finish "$@" ;;
   start)   cmd_start "$@" ;;
   status|--status|-st)  cmd_status "$@" ;;

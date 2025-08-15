@@ -76,12 +76,13 @@ get_config_values() {
 
     WORKCLI_PATH="$(get_workcli_config_file)"
     if [ ! -f "$WORKCLI_PATH" ]; then
-        print_status_message error "Configuration file not found at $WORKCLI_PATH"
-        exit 1
+        die_with_status_code 102
     fi
-    grep -E "^\s*$key:\s*" "$WORKCLI_PATH" | sed -E "s/^\s*$key:\s*//"
+
+    grep -E "^\s*$key:\s*" "$WORKCLI_PATH" | sed -E "s/^\s*$key:\s*//" | xargs
 }
 
+# Verifications -=--------------------------------
 verify_config_or_die() {
 
     local WORKCLI_PATH
@@ -90,12 +91,16 @@ verify_config_or_die() {
         # check for the config in the root of the git repository
         WORKCLI_PATH="$(git rev-parse --show-toplevel)/.workcli"
         if [ ! -f "$WORKCLI_PATH" ]; then
-            print_status_message error "workcli config file not found in root of git repository."
-            exit 102
+            die_with_status_code 102
         fi
     else
-        print_status_message error "this folder is not part of a Git repository."
-        exit 101
+        die_with_status_code 101
+    fi
+}
+
+verify_branch_or_die() {
+    if [[ ! "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
+        die_with_status_code 103
     fi
 }
 
@@ -106,8 +111,31 @@ check_if_branch_looks_safe_to_fork() {
     if [[ "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
         read -rp "You are on a branch that looks like a Jira ticket ($branch). Do you want to proceed? (y/n) " proceed
         if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
-            print_status_message warning "Aborting."
-            exit 1
+            die_with_status_code 1
         fi
     fi
+}
+
+die_with_status_code() {
+    local status_code="$1"
+
+    case "$status_code" in
+        1)
+            message='Aborted by user.'
+            ;;
+        101)
+            message="This folder is not part of a Git repository."
+            ;;
+        102)
+            message="workcli config file not found in root of git repository."
+            ;;
+        103)
+            message="You must be on a branch named like 'PROJECT-123'."
+            ;;
+        *)
+            message="An unknown error occurred."
+            ;;
+    esac
+    print_status_message error "$message"
+    exit "$status_code"
 }

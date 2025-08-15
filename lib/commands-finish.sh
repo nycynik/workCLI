@@ -14,33 +14,24 @@ cmd_finish() {
     branch=$(git rev-parse --abbrev-ref HEAD)
 
     # Check if the branch is valid
-    if [[ ! "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
-        print_status_message error "You must be on a branch named like 'PROJECT-123'."
-        exit 1
-    fi
+    verify_branch_or_die
 
     # Get the issue key from the branch name
     issue="$branch"
 
-    # Get comment either from param or user
-    comment="${1:-}"
-    if [ -z "$comment" ]; then
-        read -rp "Enter comment for ticket completion: " comment
+    # Transition the ticket to In Review and add a comment
+    acli jira workitem transition --key "$issue" --status "Done"
+
+    # close pr
+    gh pr merge "$branch" --squash -d
+    if [ $? -ne 0 ]; then
+        print_status_message error "Failed to merge PR for issue $issue."
+        exit 1
     fi
 
-    # Commit changes to repository if there are any
-    if ! git diff --quiet; then
-        git commit -m "$issue: $comment"
-        git push origin "$branch"
-    fi
+    # Checkout the base branch and pull the latest changes
+    git checkout "$(get_config_value base_branch)"
+    git pull
 
-    # Transition the ticket to Done and add a comment
-    acli jira workitem transition "$issue" --to "Done" --comment "$comment"
-
-    pr_url=$(gh pr create --base "$(get_config_value base_branch)" --head "$branch" --title "$issue: $comment" --body "Closes $issue")
-
-    # open pr
-    gh pr view "$pr_url"
-
-    print_status_message success "Ticket $issue marked as done."
+    print_status_message success "Ticket $issue marked as done, branch closed."
 }
