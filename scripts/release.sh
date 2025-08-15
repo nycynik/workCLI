@@ -3,7 +3,9 @@ set -euo pipefail
 
 # Release script for workcli
 
-# if no version, auto bump
+VERSION="${1:-}"
+
+# if no version set by user, auto bump
 if [ -z "${1:-}" ]; then
     echo "No version specified, auto bumping."
     # Get the current version
@@ -17,8 +19,6 @@ if [ ! -d "../homebrew-workcli" ]; then
     echo "No homebrew-workcli directory found, quitting."
     exit 1
 fi
-
-VERSION="$1"
 
 # 1. Update version in code
 echo "Updating version to $VERSION --"
