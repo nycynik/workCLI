@@ -10,6 +10,8 @@ cmd_create() {
     require_command acli
     require_command gh
 
+    verify_config_or_die
+
     check_if_branch_looks_safe_to_fork
 
     # get title either from param or user

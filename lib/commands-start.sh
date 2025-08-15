@@ -5,8 +5,11 @@
 cmd_start() {
     ## Start an existing ticket, this is similar to create, but instead of first
     ## making the ticket, it just starts with an existing ticket.
+
     require_command acli
     require_command gh
+
+    verify_config_or_die
 
     check_if_branch_looks_safe_to_fork
 

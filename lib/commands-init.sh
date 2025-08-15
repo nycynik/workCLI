@@ -42,16 +42,20 @@ setup_github() {
 cmd_init() {
     ## Call the setup functions
 
+    require_command acli
+    require_command gh
+
+    set_config
+
     print_status_message info "Initializing workspace..."
 
-    # first check if there is a .workcli.yaml file in this root, if not, copy the config.template.yml into that file.
-    if [ ! -f ".workcli.yaml" ]; then
-        cat <<EOF > .workcli.yaml
-# JIRA CONFIG
-project: "PROJECT_KEY"
-type: "Task"
+    # first check if there is a .workcli file in this root, if not, copy the config.template.yml into that file.
+    if [ ! -f ".workcli" ]; then
+        cat <<EOF > .workcli
+JIRA_PROJECT="PROJECT_KEY"
+JIRA_TYPE="Task"
 EOF
-        print_status_message info "Created .workcli.yaml from template."
+        print_status_message info "Created .workcli from template."
     fi
 
     setup_jira

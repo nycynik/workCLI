@@ -6,6 +6,8 @@ cmd_status() {
 
     require_command acli
 
+    set_config
+
     branch=$(git rev-parse --abbrev-ref HEAD)
 
     if [[ ! "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then

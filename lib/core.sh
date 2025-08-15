@@ -13,7 +13,10 @@ cmd_help() {
     echo -e "${INFO_COLOR}Usage: workcli <command> [options]${NC}"
     echo -e "${INFO_COLOR}Commands:${NC}"
     echo -e "  init    Initialize the workspace"
+    echo -e "  start   Start working on a ticket"
+    echo -e "  finish  Finish working on a ticket"
     echo -e "  create  Create a new ticket"
+    echo -e "  status  Show the status of a ticket"
     echo -e "  help    Show this help message"
     echo -e "  --version Show version information"
 }
@@ -58,9 +61,34 @@ require_command() {
     }
 }
 
-get_config_value() {
+get_config_values() {
     local key="$1"
-    grep -E "^\s*$key:\s*" .workcli.yaml | sed -E "s/^\s*$key:\s*//"
+    local WORKCLI_PATH
+    WORKCLI_PATH="$(git rev-parse --show-toplevel)/.workcli"
+    if [ ! -f "$WORKCLI_PATH" ]; then
+        print_status_message error "Configuration file not found at $WORKCLI_PATH"
+        exit 1
+    fi
+    grep -E "^\s*$key:\s*" "$WORKCLI_PATH" | sed -E "s/^\s*$key:\s*//"
+}
+
+verify_config_or_die() {
+
+    local WORKCLI_PATH
+
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        # check for the config in the root of the git repository
+        WORKCLI_PATH="$(git rev-parse --show-toplevel)/.workcli"
+        if [ -f "$WORKCLI_PATH" ]; then
+            echo "Found config file at $WORKCLI_PATH"
+        else
+            print_status_message error "workcli config file not found in root of git repository."
+            exit 102
+        fi
+    else
+        print_status_message error "this folder is not part of a Git repository."
+        exit 101
+    fi
 }
 
 check_if_branch_looks_safe_to_fork() {
