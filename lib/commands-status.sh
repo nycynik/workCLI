@@ -8,6 +8,11 @@ cmd_status() {
 
     verify_config_or_die
 
+    if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+        print_status_message error "No commits found on this branch."
+        exit 1
+    fi
+
     branch=$(git rev-parse --abbrev-ref HEAD)
 
     if [[ ! "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then

@@ -21,6 +21,14 @@ cmd_create() {
     jproject="$(get_config_values JIRA_PROJECT)"
     jtype="$(get_config_values JIRA_TYPE)"
 
+    if $VERBOSE; then
+        echo "Creating Jira ticket with the following details:"
+        echo "Project: $jproject"
+        echo "Type: $jtype"
+        echo "Title: $title"
+        echo "Description: $description"
+    fi
+
     if [ -z "$title" ]; then
         read -rp "Enter ticket title: " title
     fi

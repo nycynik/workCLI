@@ -24,9 +24,9 @@ cmd_help() {
 cmd_version() {
     VERSION="0.1.7"
     if [[ $VERBOSE -eq 1 ]]; then
-        echo "workcli $VERSION"
+        echo "workcli $VERSION https://github.com/nycynik/workcli"
     else
-        echo "$VERSION"
+        echo "workcli $VERSION"
     fi
 
 }
@@ -89,9 +89,7 @@ verify_config_or_die() {
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         # check for the config in the root of the git repository
         WORKCLI_PATH="$(git rev-parse --show-toplevel)/.workcli"
-        if [ -f "$WORKCLI_PATH" ]; then
-            echo "Found config file at $WORKCLI_PATH"
-        else
+        if [ ! -f "$WORKCLI_PATH" ]; then
             print_status_message error "workcli config file not found in root of git repository."
             exit 102
         fi
