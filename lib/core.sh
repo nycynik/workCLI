@@ -82,12 +82,10 @@ verify_config_or_die() {
         if [ -f "$WORKCLI_PATH" ]; then
             echo "Found config file at $WORKCLI_PATH"
         else
-            print_status_message error "workcli config file not found in root of git repository."
-            exit 102
+            die_with_status_code 102
         fi
     else
-        print_status_message error "this folder is not part of a Git repository."
-        exit 101
+        die_with_status_code 101
     fi
 }
 
@@ -98,8 +96,28 @@ check_if_branch_looks_safe_to_fork() {
     if [[ "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
         read -rp "You are on a branch that looks like a Jira ticket ($branch). Do you want to proceed? (y/n) " proceed
         if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
-            print_status_message warning "Aborting."
-            exit 1
+            die_with_status_code 1
         fi
     fi
+}
+
+die_with_status_code() {
+    local status_code="$1"
+
+    case "$status_code" in
+        1)
+            message='Aborted by user.'
+            ;;
+        101)
+            message="This folder is not part of a Git repository."
+            ;;
+        102)
+            message="workcli config file not found in root of git repository."
+            ;;
+        *)
+            message="An unknown error occurred."
+            ;;
+    esac
+    print_status_message error "$message"
+    exit "$status_code"
 }
