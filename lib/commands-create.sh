@@ -3,6 +3,7 @@
 
 
 cmd_create() {
+    local title description issue url jproject jtype
     ## Create a new ticket in Jira and begin work on it
     ## parameters are optional, as they can be prompted
     ## create {title} {description}
@@ -17,6 +18,9 @@ cmd_create() {
     # get title either from param or user
     title="${1:-}"
     description="${2:-}"
+    jproject="$(get_config_values JIRA_PROJECT)"
+    jtype="$(get_config_values JIRA_TYPE)"
+
     if [ -z "$title" ]; then
         read -rp "Enter ticket title: " title
     fi
@@ -25,7 +29,7 @@ cmd_create() {
         read -rp "Enter ticket description: " description
     fi
 
-    output=$(acli jira workitem create --project "$(get_config_value project)" --type "$(get_config_value type)" --summary "$title" --description "$description" --assignee "@me")
+    output=$(acli jira workitem create --project "$jproject" --type "$jtype" --summary "$title" --description "$description" --assignee "@me")
 
     # Extract the issue key and URL
     issue=$(echo "$output" | grep -oE '[A-Z]+-[0-9]+')

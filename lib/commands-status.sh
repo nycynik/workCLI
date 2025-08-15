@@ -6,7 +6,7 @@ cmd_status() {
 
     require_command acli
 
-    set_config
+    verify_config_or_die
 
     branch=$(git rev-parse --abbrev-ref HEAD)
 

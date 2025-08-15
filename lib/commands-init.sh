@@ -38,6 +38,21 @@ setup_github() {
     fi
 }
 
+setup_config() {
+    ## Setup configuration file
+    local WORKCLI_PATH
+
+    WORKCLI_PATH="$(get_workcli_config_file)"
+
+    if [ ! -f "$WORKCLI_PATH" ]; then
+        print_status_message warning "Configuration file not found at $WORKCLI_PATH. Creating a new one."
+        touch "$WORKCLI_PATH"
+        echo "# Workcli configuration file" > "$WORKCLI_PATH"
+        echo "JIRA_PROJECT: your-project-code" >> "$WORKCLI_PATH"
+        echo "JIRA_TYPE: your-issue-type" >> "$WORKCLI_PATH"
+    fi
+}
+
 
 cmd_init() {
     ## Call the setup functions
@@ -45,18 +60,9 @@ cmd_init() {
     require_command acli
     require_command gh
 
-    set_config
-
     print_status_message info "Initializing workspace..."
 
-    # first check if there is a .workcli file in this root, if not, copy the config.template.yml into that file.
-    if [ ! -f ".workcli" ]; then
-        cat <<EOF > .workcli
-JIRA_PROJECT="PROJECT_KEY"
-JIRA_TYPE="Task"
-EOF
-        print_status_message info "Created .workcli from template."
-    fi
+    setup_config
 
     setup_jira
     setup_github
