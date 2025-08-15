@@ -10,6 +10,8 @@ cmd_create() {
     require_command acli
     require_command gh
 
+    check_if_branch_looks_safe_to_fork
+
     # get title either from param or user
     title="${1:-}"
     description="${2:-}"
@@ -21,9 +23,18 @@ cmd_create() {
         read -rp "Enter ticket description: " description
     fi
 
-    acli jira workitem create --project "$(get_config_value project)" --type "$(get_config_value type)" --summary "$title" --description "$description" --assignee "@me"
-    # ✓ Work item CCS-7 created: https://theinfluence.atlassian.net/browse/CCS-7        # acli jira issue create --project "PROJECT_KEY" --type "Task" --summary "$1" --description "$2"
-        # gh issue create --title "New ticket title" --body "Detailed description of the new ticket"
-    echo "Creating ticket with title: $title and description: $description"
-    print_status_message success "New ticket created successfully."
+    output=$(acli jira workitem create --project "$(get_config_value project)" --type "$(get_config_value type)" --summary "$title" --description "$description" --assignee "@me")
+
+    # Extract the issue key and URL
+    issue=$(echo "$output" | grep -oE '[A-Z]+-[0-9]+')
+    url=$(echo "$output" | grep -oE 'https?://[^ ]+')
+
+    # Create and switch to branch with issue name, and set the upstream
+    git checkout -b "$issue"
+    git push --set-upstream origin "$issue"
+
+    # Move the ticket to the next column
+    acli jira workitem transition "$issue" --to "In Progress"
+
+    print_status_message success "New ticket created successfully. $url"
 }

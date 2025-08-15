@@ -62,3 +62,16 @@ get_config_value() {
     local key="$1"
     grep -E "^\s*$key:\s*" .workcli.yaml | sed -E "s/^\s*$key:\s*//"
 }
+
+check_if_branch_looks_safe_to_fork() {
+        # if your on a branch that has a - in it, it might be a ticket, so warn and check if
+    # we should proceed.
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
+        read -rp "You are on a branch that looks like a Jira ticket ($branch). Do you want to proceed? (y/n) " proceed
+        if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
+            echo "Aborting ticket creation."
+            exit 1
+        fi
+    fi
+}

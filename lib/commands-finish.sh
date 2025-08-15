@@ -6,6 +6,7 @@ cmd_finish() {
     ## finish {comment}
 
     require_command acli
+    require_command gh
 
     # Get the current branch name
     branch=$(git rev-parse --abbrev-ref HEAD)
