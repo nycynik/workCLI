@@ -10,19 +10,28 @@ INFO_COLOR='\033[0;34m'
 NC='\033[0m' # No Color
 
 cmd_help() {
+    echo -e "${INFO_COLOR}workcli - A CLI tool to streamline your workflow with Jira and GitHub${NC}"
+    echo -e "\nTo begin: use [init], this will set up a project.\n"
+    echo -e "For each ticket, you can either [create] a new ticket and begin working on that, "
+    echo -e "\n   or [start] working on an existing ticket.\n${NC}"
+    echo -e "Once you have a ticket checked out, you can use the following commands:"
+    echo -e "  [done]   Mark a ticket as done"
+    echo -e "  [status] Show the status of a ticket"
+    echo -e "\nThen once you marked a ticket done, the PR can be reviewed. After \nit's reviewed, you can [finish] the review.\n"
     echo -e "${INFO_COLOR}Usage: workcli <command> [options]${NC}"
     echo -e "${INFO_COLOR}Commands:${NC}"
+    echo -e "  create  Create a new ticket"
+    echo -e "  done    Mark a ticket as done"
+    echo -e "  finish  Finish review of a PR"
+    echo -e "  help    Show this help message"
     echo -e "  init    Initialize the workspace"
     echo -e "  start   Start working on a ticket"
-    echo -e "  finish  Finish working on a ticket"
-    echo -e "  create  Create a new ticket"
     echo -e "  status  Show the status of a ticket"
-    echo -e "  help    Show this help message"
     echo -e "  --version Show version information"
 }
 
 cmd_version() {
-    VERSION="0.1.8"
+    VERSION="0.1.9"
     if [[ $VERBOSE -eq 1 ]]; then
         echo "workcli $VERSION https://github.com/nycynik/workcli"
     else
