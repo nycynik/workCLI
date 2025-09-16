@@ -4,8 +4,6 @@ cmd_status() {
     ## Check the status of the current checked out branch
     ## since the branch name is a jira ticket.
 
-    require_command acli
-
     verify_config_or_die
 
     if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
@@ -14,20 +12,19 @@ cmd_status() {
     fi
 
     branch=$(git rev-parse --abbrev-ref HEAD)
+    issue_key=$(provider_get_issue_key_from_branch_name "$branch")
 
-    if [[ ! "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
-        print_status_message error "You must be on a branch named like 'PROJECT-123'."
+    if ! provider_validate_branch_name "$branch"; then
+        print_status_message error "You must be on a branch named with the ticket format."
         exit 1
     fi
-
-    issue_key="$branch"
 
     if [ -z "$issue_key" ]; then
         print_status_message error "Issue key is required."
         exit 1
     fi
 
-    output=$(acli jira workitem get "$issue_key")
+    output=$(provider_get_workitem "$issue_key")
 
     if [ $? -ne 0 ]; then
         print_status_message error "Failed to retrieve status for issue $issue_key."
