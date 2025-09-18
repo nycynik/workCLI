@@ -71,6 +71,23 @@ get_config_values() {
     grep -E "^\s*$key:\s*" "$WORKCLI_PATH" | sed -E "s/^\s*$key:\s*//" | xargs
 }
 
+load_provider() {
+    local provider
+    provider=$(get_config_values "PROVIDER" || echo "jira")
+    if [ -z "$provider" ]; then
+        provider="jira"
+    fi
+
+    local provider_file="$LIB_DIR/providers/$provider.sh"
+    if [ -f "$provider_file" ]; then
+        # shellcheck disable=SC1090
+        source "$provider_file"
+    else
+        print_status_message error "Provider '$provider' not found."
+        exit 1
+    fi
+}
+
 # Verifications -=--------------------------------
 verify_config_or_die() {
 
@@ -88,7 +105,7 @@ verify_config_or_die() {
 }
 
 verify_branch_or_die() {
-    if [[ ! "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
+    if ! provider_validate_branch_name "$branch"; then
         die_with_status_code 103
     fi
 }
@@ -96,9 +113,10 @@ verify_branch_or_die() {
 check_if_branch_looks_safe_to_fork() {
     # if your on a branch that has a - in it, it might be a ticket, so warn and check if
     # we should proceed.
-    branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ "$branch" =~ ^[A-Z]+-[0-9]+$ ]]; then
-        read -rp "You are on a branch that looks like a Jira ticket ($branch). Do you want to proceed? (y/n) " proceed
+    local current_branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if provider_validate_branch_name "$current_branch"; then
+        read -rp "You are on a branch that looks like a ticket ($current_branch). Do you want to proceed? (y/n) " proceed
         if [[ ! "$proceed" =~ ^[Yy]$ ]]; then
             die_with_status_code 1
         fi
@@ -119,7 +137,7 @@ die_with_status_code() {
             message="workcli config file not found in root of git repository."
             ;;
         103)
-            message="You must be on a branch named like 'PROJECT-123'."
+            message="You must be on a branch named with the ticket format."
             ;;
         *)
             message="An unknown error occurred."

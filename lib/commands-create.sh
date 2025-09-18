@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 cmd_create() {
-    local title description issue url jproject jtype
+    local title description issue url
     ## Create a new ticket in Jira and begin work on it
     ## parameters are optional, as they can be prompted
     ## create {title} {description}
-    require_command acli
     require_command gh
     verify_config_or_die
 
@@ -14,16 +13,6 @@ cmd_create() {
     # get title either from param or user
     title="${1:-}"
     description="${2:-}"
-    jproject="$(get_config_values JIRA_PROJECT)"
-    jtype="$(get_config_values JIRA_TYPE)"
-
-    if [ -n "$VERBOSE" ] && [ "$VERBOSE" != "0" ]; then
-        echo "Creating Jira ticket with the following details:"
-        echo "Project: $jproject"
-        echo "Type: $jtype"
-        echo "Title: $title"
-        echo "Description: $description"
-    fi
 
     if [ -z "$title" ]; then
         read -rp "Enter ticket title: " title
@@ -33,11 +22,7 @@ cmd_create() {
         read -rp "Enter ticket description: " description
     fi
 
-    output=$(acli jira workitem create --project "$jproject" --type "$jtype" --summary "$title" --description "$description" --assignee "@me")
-
-    # Extract the issue key and URL
-    issue=$(echo "$output" | grep -oE '[A-Z]+-[0-9]+' | head -n1 | tr -d '[:space:]')
-    url=$(echo "$output" | grep -oE 'https?://[^ ]+')
+    read -r issue url <<<"$(provider_create_workitem "$title" "$description")"
 
     if [ -n "$VERBOSE" ] && [ "$VERBOSE" != "0" ]; then
         echo "Issue Created: $issue"
@@ -52,8 +37,12 @@ cmd_create() {
     git branch --set-upstream-to=origin/"$issue"
 
     # Move the ticket to the next column
+<<<<<<< HEAD
     acli jira workitem transition --key "$issue" --status "In Progress" --assignee "@me"
     acli jira workitem assign --key "$issue" --assignee "@me"
+=======
+    provider_transition_workitem "$issue" "In Progress"
+>>>>>>> 0010fe5297c0d6204248ca2124ebe620b054d981
 
     print_status_message success "New ticket created successfully. $url"
 }

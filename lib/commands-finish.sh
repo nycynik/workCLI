@@ -5,7 +5,6 @@ cmd_finish() {
     ## parameters are optional, as they can be prompted
     ## finish {comment}
 
-    require_command acli
     require_command gh
 
     verify_config_or_die
@@ -14,13 +13,16 @@ cmd_finish() {
     branch=$(git rev-parse --abbrev-ref HEAD)
 
     # Check if the branch is valid
-    verify_branch_or_die
+    if ! provider_validate_branch_name "$branch"; then
+        print_status_message error "You must be on a branch named with the ticket format."
+        exit 1
+    fi
 
     # Get the issue key from the branch name
-    issue="$branch"
+    issue=$(provider_get_issue_key_from_branch_name "$branch")
 
     # Transition the ticket to In Review and add a comment
-    acli jira workitem transition --key "$issue" --status "Done"
+    provider_transition_workitem "$issue" "Done"
 
     # close pr
     gh pr merge "$branch" --squash -d

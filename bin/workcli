@@ -20,7 +20,15 @@ fi
 
 # Source core + command files
 # shellcheck disable=SC1091
+<<<<<<< HEAD
 source "$LIB_DIR/core.sh" # must be first.
+=======
+source "$LIB_DIR/core.sh"
+
+# Load the provider
+load_provider
+
+>>>>>>> 0010fe5297c0d6204248ca2124ebe620b054d981
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-init.sh"
 # shellcheck disable=SC1091
@@ -33,8 +41,11 @@ source "$LIB_DIR/commands-status.sh"
 source "$LIB_DIR/commands-start.sh"
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-done.sh"
+<<<<<<< HEAD
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-help.sh"
+=======
+>>>>>>> 0010fe5297c0d6204248ca2124ebe620b054d981
 
 # Command routing
 COMMAND="${1:-help}"
