@@ -37,12 +37,7 @@ cmd_create() {
     git branch --set-upstream-to=origin/"$issue"
 
     # Move the ticket to the next column
-<<<<<<< HEAD
-    acli jira workitem transition --key "$issue" --status "In Progress" --assignee "@me"
-    acli jira workitem assign --key "$issue" --assignee "@me"
-=======
     provider_transition_workitem "$issue" "In Progress"
->>>>>>> 0010fe5297c0d6204248ca2124ebe620b054d981
 
     print_status_message success "New ticket created successfully. $url"
 }

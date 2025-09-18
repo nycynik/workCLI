@@ -11,7 +11,7 @@ NC='\033[0m' # No Color
 
 
 cmd_version() {
-    VERSION="0.1.13"
+    VERSION="0.1.14"
     if [[ $VERBOSE -eq 1 ]]; then
         echo "workcli $VERSION https://github.com/nycynik/workcli"
     else
