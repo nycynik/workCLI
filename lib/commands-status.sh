@@ -27,14 +27,13 @@ cmd_status() {
         exit 1
     fi
 
-    output=$(acli jira workitem get "$issue_key")
+    # Get the status of the issue from Jira, and then add color to the keys
+    output=$(acli jira workitem view "$issue_key")
 
     if [ $? -ne 0 ]; then
         print_status_message error "Failed to retrieve status for issue $issue_key."
         exit 1
     fi
-
-    print_status_message info "Status for $issue_key"
 
     echo "================================================"
     echo -e "${INFO_COLOR}Issue Key:${NC} ${issue_key}"
@@ -42,7 +41,7 @@ cmd_status() {
     echo -e "$output"
     echo "================================================"
 
-    # display compact list of commits
-    git log --oneline --no-merges "$branch" | awk '{print " - " $1 ": " $2}'
+    # display compact list of last 5 commits since creating this branch
+    git log dev..HEAD --oneline --no-merges | head -n 5 | awk '{print " - " $1 ": " $2}'
 
 }

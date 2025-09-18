@@ -29,7 +29,7 @@ cmd_start() {
     fi
 
     # Start the ticket in Jira
-    acli jira workitem transition "$issue" --to "In Progress"
+    acli jira workitem transition --key "$issue" --status "In Progress"
 
     print_status_message success "Ticket $issue is now in progress."
 }

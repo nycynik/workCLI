@@ -35,7 +35,7 @@ cmd_done() {
     acli jira workitem comment --key "$issue" --body "$comment"
     acli jira workitem transition --key "$issue" --status "In Review"
 
-    gh pr create --base "$(get_config_value base_branch)" --head "$branch" --title "$issue: $comment" --body "Closes $issue"
+    gh pr create --base "$(get_config_values base_branch)" --head "$branch" --title "$issue: $comment" --body "Closes $issue"
 
     # open pr
     gh pr view --web

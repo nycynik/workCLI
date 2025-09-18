@@ -29,9 +29,5 @@ cmd_finish() {
         exit 1
     fi
 
-    # Checkout the base branch and pull the latest changes
-    git checkout "$(get_config_value base_branch)"
-    git pull
-
     print_status_message success "Ticket $issue marked as done, branch closed."
 }

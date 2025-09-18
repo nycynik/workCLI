@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-
-
 cmd_create() {
     local title description issue url jproject jtype
     ## Create a new ticket in Jira and begin work on it
@@ -51,10 +49,11 @@ cmd_create() {
     else
         git checkout "$issue"
     fi
-    git push --set-upstream origin "$issue"
+    git branch --set-upstream-to=origin/"$issue"
 
     # Move the ticket to the next column
-    acli jira workitem transition --key "$issue" --status "In Progress"
+    acli jira workitem transition --key "$issue" --status "In Progress" --assignee "@me"
+    acli jira workitem assign --key "$issue" --assignee "@me"
 
     print_status_message success "New ticket created successfully. $url"
 }

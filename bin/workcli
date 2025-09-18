@@ -20,7 +20,7 @@ fi
 
 # Source core + command files
 # shellcheck disable=SC1091
-source "$LIB_DIR/core.sh"
+source "$LIB_DIR/core.sh" # must be first.
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-init.sh"
 # shellcheck disable=SC1091
@@ -31,6 +31,10 @@ source "$LIB_DIR/commands-finish.sh"
 source "$LIB_DIR/commands-status.sh"
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-start.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-done.sh"
+# shellcheck disable=SC1091
+source "$LIB_DIR/commands-help.sh"
 
 # Command routing
 COMMAND="${1:-help}"
@@ -49,13 +53,13 @@ if [[ $VERBOSE -eq 1 ]]; then
 fi
 
 case "$COMMAND" in
-  init)   cmd_init "$@" ;;
   create)  cmd_create "$@" ;;
   done)    cmd_done "$@" ;;
   finish)  cmd_finish "$@" ;;
-  start)   cmd_start "$@" ;;
-  status|--status|-st)  cmd_status "$@" ;;
   help|--help|-h) cmd_help ;;
+  init)   cmd_init "$@" ;;
+  start)   cmd_start "$@" ;;
+  status|st|--status)  cmd_status "$@" ;;
   --version) cmd_version ;;
   *) echo "Unknown command: $COMMAND" && cmd_help && exit 1 ;;
 esac
