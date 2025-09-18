@@ -24,12 +24,7 @@ cmd_status() {
         exit 1
     fi
 
-<<<<<<< HEAD
-    # Get the status of the issue from Jira, and then add color to the keys
-    output=$(acli jira workitem view "$issue_key")
-=======
     output=$(provider_get_workitem "$issue_key")
->>>>>>> 0010fe5297c0d6204248ca2124ebe620b054d981
 
     if [ $? -ne 0 ]; then
         print_status_message error "Failed to retrieve status for issue $issue_key."
