@@ -12,13 +12,12 @@ cmd_status() {
     fi
 
     branch=$(git rev-parse --abbrev-ref HEAD)
-    issue_key=$(provider_get_issue_key_from_branch_name "$branch")
-
     if ! provider_validate_branch_name "$branch"; then
         print_status_message error "You must be on a branch named with the ticket format."
         exit 1
     fi
 
+    issue_key=$(provider_get_issue_key_from_branch_name "$branch")
     if [ -z "$issue_key" ]; then
         print_status_message error "Issue key is required."
         exit 1

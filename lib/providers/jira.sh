@@ -31,14 +31,14 @@ provider_transition_workitem() {
 provider_get_workitem() {
     require_command acli
     local issue_key="$1"
-    acli jira workitem get "$issue_key"
+    acli jira workitem view "$issue_key"
 }
 
 provider_add_comment() {
     require_command acli
     local issue_key="$1"
     local comment="$2"
-    acli jira workitem comment --key "$issue_key" --body "$comment"
+    acli jira workitem comment create --key "$issue_key" --body "$comment"
 }
 
 provider_validate_branch_name() {
@@ -54,7 +54,13 @@ provider_get_issue_key_from_branch_name() {
     local branch_name="$1"
     if provider_validate_branch_name "$branch_name"; then
         echo "$branch_name"
+        return 0
     else
         return 1
     fi
+}
+
+provider_show_provider_name() {
+    echo "jira"
+    acli jira auth status
 }

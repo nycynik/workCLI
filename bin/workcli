@@ -36,6 +36,9 @@ source "$LIB_DIR/commands-done.sh"
 # shellcheck disable=SC1091
 source "$LIB_DIR/commands-help.sh"
 
+# Laod provider
+load_provider
+
 # Command routing
 COMMAND="${1:-help}"
 shift || true

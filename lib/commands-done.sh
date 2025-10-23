@@ -24,7 +24,7 @@ cmd_done() {
     # Get comment either from param or user
     comment="${1:-}"
     if [ -z "$comment" ]; then
-        read -rp "Enter comment for ticket completion: " comment
+        read -rp "Enter comment for ticket completion ($issue): " comment
     fi
 
     # Commit changes to repository if there are any

@@ -3,7 +3,6 @@
 
 cmd_help() {
     ## Show help for workcli
-            echo "hi"
 
     # if no additional arguments are provided, show general help
     if [ $# -eq 0 ]; then
