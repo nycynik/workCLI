@@ -7,11 +7,11 @@ VERSION="${1:-}"
 
 # if no version set by user, auto bump
 if [ -z "${1:-}" ]; then
-    echo "No version specified, auto bumping."
     # Get the current version
     VERSION=$(sed -n 's/^.*VERSION="\([^"]*\)".*$/\1/p' lib/core.sh)
     # Increment the patch version
     VERSION=$(echo "$VERSION" | awk -F. -v OFS=. '{$NF++;print}')
+    echo "No version specified, auto bumped to $VERSION"
 fi
 
 # if no homebrew-workcli directory, quit
@@ -23,13 +23,12 @@ fi
 # 1. Update version in code
 echo "Updating version to $VERSION --"
 sed -i '' "s/^    VERSION=\".*\"/    VERSION=\"$VERSION\"/" lib/core.sh
-bin/workcli --version
 echo "Version updated to $VERSION"
 
 # 2. Commit and tag
 echo "Committing changes and tagging version $VERSION --"
 git add lib/core.sh
-git ci -m "Bump version to $VERSION"
+git commit -m "Bump version to $VERSION"
 git tag "v$VERSION"
 git push origin main --tags
 echo "Changes committed and tagged version $VERSION"

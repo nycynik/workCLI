@@ -63,6 +63,6 @@ case "$COMMAND" in
   init)   cmd_init "$@" ;;
   start)   cmd_start "$@" ;;
   status|st|--status)  cmd_status "$@" ;;
-  --version) cmd_version ;;
+  -v|--version) cmd_version ;;
   *) echo "Unknown command: $COMMAND" && cmd_help && exit 1 ;;
 esac
